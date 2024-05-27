@@ -1,0 +1,225 @@
+<!-- Primary HTML File for https://github.com/TrifectaIII/MTG-Card-Reader-Web -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>MTG Card Reader</title>
+
+	<!-- Load Favicon -->
+	<link href='static/favicon.ico' rel='icon' type='image/x-icon' />
+	
+	<!-- Load FileSaver.js -->
+	<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.2/dist/FileSaver.min.js"></script>
+
+	<!-- Include skeleton.css -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/getskeleton@2.0.4-2/lib/css/skeleton.css">
+
+	<!-- Include choices.js -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js@7.0.0/public/assets/styles/choices.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/choices.js@7.0.0/public/assets/scripts/choices.min.js"></script>
+
+	<!--  Load CSS Files -->
+	<link rel="stylesheet" href="static/notif.css">
+	<link rel="stylesheet" href="static/modal.css">
+	<link rel="stylesheet" href="static/set_list.css">
+    <link rel="stylesheet" href="static/main.css">
+</head>
+
+<body>
+	<!-- INFO MODAL -->
+	<div class="modal">
+		<div class="modal-inner">
+			<div class="modal-content">
+				<div class="modal-close-icon">
+					<a href="javascript:void(0)" class="close-modal">
+						<i class="fa fa-times" aria-hidden="true"></i>
+					</a>
+				</div>
+
+				<!-- Contents of Modal Window -->
+				<div class="modal-content-inner">
+					<div class='row'>
+						<h2>Information</h2>
+						<hr class="modal-buttons-seperator">
+					</div>
+
+					<!-- INSTRUCTIONS -->
+					<div class='row'>
+						<div class='seven columns infocol'>
+							<h4>&#x1F4CB; Инструкция</h4>
+							<hr class="modal-buttons-seperator">
+							<p>
+								Подключите веб-камеру, поместите карту перед ней, выберите
+								подходящий набор и нажмите на кнопку. Как только карта будет идентифицирована, добавьте копии
+								в список, используя предусмотренные кнопки.
+							</p>
+							<p>
+								<b>
+									Для достижения наилучших результатов, пожалуйста, убедитесь, что у вас хорошее освещение, что
+									карта находится в фокусе, а фон как
+									можно более невыразительный. 
+								</b>
+							</p>
+						</div>
+
+						<!-- FAQ -->
+						<!-- <div class='four columns infocol'>
+							<h4>&#x2753; FAQ</h4>
+							<hr class="modal-buttons-seperator">
+							<p>
+								<b>Under Construction</b>
+								<br>
+								This section is reserved for answering common user questions.
+							</p>
+						</div> -->
+
+						<!-- TOOLS -->
+						<div class='five columns infocol'>
+							<h4>&#x1F528; Технологии</h4>
+							<hr class="modal-buttons-seperator">
+							<ul>
+								<li><a href="https://www.python.org/">Python</a></li>
+								<li><a href="https://pypi.org/project/opencv-python/">OpenCV</a></li>
+								<li><a href="http://bottlepy.org/">Bottle</a></li>
+								<li><a href="https://mtgjson.com/">MTGJSON</a></li>
+								<li><a href="https://scryfall.com/docs/api">Scryfall API</a></li>
+								<li><a href="https://github.com/jshjohnson/Choices">Choices</a></li>
+								<li><a href="https://github.com/eligrey/FileSaver.js">FileSaver</a></li>
+								<li><a href="http://getskeleton.com/">Skeleton</a></li>
+							</ul>
+						</div>
+					</div>
+
+					<!-- Close Modal Button -->
+					<hr class="modal-buttons-seperator">
+					<div class="modal-buttons">
+						<button class="button close-modal button-primary">Закрыть</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- MAIN -->
+	<div class='full_page container'>
+
+		<!-- <div class='top_spacer'></div> -->
+		<!-- NOTIF SECTION -->
+		<div class='notif_wrap'>
+			<div class='notif row'>
+				<div class='notif_text_col ten columns'>
+					<span class='notif_text'></span>
+				</div>
+				<div class='close_notif_col two columns'>
+					<button class='close_notif'>Закрыть</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- MAIN SECTION -->
+		<div class='main_page row'>
+
+			<!-- TITLE AND WEBCAM SECTION -->
+			<div class='one-third column'>
+				<h2 class='title'>MTG Card Reader</h2>
+				<span>Выберите видео поток:</span>
+				<select class='cam_select'></select>
+				<br>
+				<button class='reload_cam_button'>Перезагрузить видео</button>
+				<video class="webcam_feed" autoplay="true"></video>
+			</div>
+
+			<!-- IDENTIFY, DISPLAY CARD INFO, ADDING BUTTONS SECTION -->
+			<div class='one-third column'>
+
+				<!-- IDENTIFY -->
+				<div class='identify_tools row'>
+					<span>Набор:</span>
+					<br>
+					<select class='set_selector'>
+						<option placeholder>Выберите набор</option>
+					</select>
+					<button class='identify_card_button button-primary' disabled='true'>РАСПОЗНАТЬ КАРТУ</button>
+				</div>
+
+				<br>
+
+				<!-- DISPLAY CARD INFO, ADDING BUTTONS -->
+				<div class='card_display_adding_buttons row'>
+					<div class='card_display one-half column'>
+						<span class='card_name'>&nbsp;</span>
+						<br>
+                        <img class='card_image' src='static/cardback.png'>
+                        <br>
+                        <p class='card_link'>&nbsp;</p>
+					</div>
+
+					<!-- TABLE FOR ADDING BUTTONS (All disabled by default until a card is matched) -->
+					<div class='adding_buttons one-half column'>
+						<!-- <span>Add Card</span></nobr> -->
+						<button id='add1' class='add_button' disabled='true'>Добавить 1</button>
+						<button id='add4' class='add_button' disabled='true'>Добавить 4</button>
+						<button id='add10' class=' add_button' disabled='true'>Добавить 10</button>
+						<button id='rem1' class=' remove_button' disabled='true'>Удалить 1</button>
+						<button id='rem4' class=' remove_button' disabled='true'>Удалить 4</button>
+						<button id='rem10' class=' remove_button' disabled='true'>Удалить 10</button>
+						<button id='remall' class=' remove_button' disabled='true'>Удалить все</button>
+					</div>
+				</div>
+			</div>
+
+			<!-- TEXTAREA SECTION -->
+			<div class='text_section one-third column'>
+
+				<!-- TEXTAREA -->
+				<div class='row'>
+					<textarea class='card_list' rows=18 placeholder='Карточки, которые вы добавите, появятся здесь!'></textarea>
+				</div>
+
+				<!-- TEXTAREA BUTTONS -->
+				<div class='text_buttons row'>
+					<button class='sideboard_button text_button'>Добавить добор</button>
+					<button class='save_button text_button'>Сохранить в файл &#x1F4BE;</button>
+					<button class='clear_button text_button'>Очистить &#x1F4A3;</button>
+				<!-- /<button class='open_notif'>Test Notification</button> -->
+				</div>
+			</div>
+		</div>
+
+		<!-- FOOTER -->
+		<div class='footer row'>
+			<span>Created by Martynov Pavel</span>
+			<br>
+			<button class="open-modal">Информация</button>
+		</div>
+	</div>
+
+	<!-- Load JS Scripts -->
+
+	<!-- Global -->
+	<script src="static/global.js"></script>
+
+	<!-- Notif relies on nothing -->
+	<script src="static/notif.js"></script>
+
+	<!-- Modal relies on nothing -->
+	<script src="static/modal.js"></script>
+
+	<!-- Video relies on global, notify -->
+	<script src="static/video.js"></script>
+
+	<!-- Set_List relies on  global, notify -->
+	<script src="static/set_list.js"></script>
+
+	<!-- Matching relies on global, notify, video -->
+	<script src="static/matching.js"></script>
+
+	<!-- Buttons relies on basically everything -->
+	<script src="static/buttons.js"></script>
+
+</body>
+
+</html>
